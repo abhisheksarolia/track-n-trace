@@ -265,4 +265,3 @@ def lambda_handler(event, context):
             "statusCode": 503,
             "body": return_message
         }
-        

@@ -235,10 +235,10 @@ export class TrackntraceCdkStack extends Stack {
       redirectUri: 'https://oauth.pstmn.io/v1/callback', // must be a URL configured under 'callbackUrls' with the client
     });
 
-    // // REST API for API GATEWAY  - Uncomment below lines if need to enable authentication using Cognito
-    // const auth = new apigw.CognitoUserPoolsAuthorizer(this, 'trackntraceAuthorizer', {
-    //   cognitoUserPools: [userPool]
-    // });
+    // // REST API for API GATEWAY  
+    const auth = new apigw.CognitoUserPoolsAuthorizer(this, 'trackntraceAuthorizer', {
+      cognitoUserPools: [userPool]
+    });
 
     const api = new apigw.RestApi(this, 'TracknTraceApi', {
       restApiName: 'TracknTraceApi'+'-'+start,
@@ -250,17 +250,52 @@ export class TrackntraceCdkStack extends Stack {
   
     const trkntrcResource = api.root.addResource('trackntrace');
     const ledgerResource = trkntrcResource.addResource('ledger'); // GET with querystring , POST
-    ledgerResource.addMethod('GET', new apigw.LambdaIntegration(ledgerDescriber,{allowTestInvoke:true}))
-    ledgerResource.addMethod('POST', new apigw.LambdaIntegration(ledgerInitializer,{allowTestInvoke:true}))
+    ledgerResource.addMethod('GET', new apigw.LambdaIntegration(ledgerDescriber,{allowTestInvoke:true}),
+    {
+      authorizer: auth,
+      authorizationType: apigw.AuthorizationType.COGNITO
+      
+    })
+    ledgerResource.addMethod('POST', new apigw.LambdaIntegration(ledgerInitializer,{allowTestInvoke:true}),
+    {
+      authorizer: auth,
+      authorizationType: apigw.AuthorizationType.COGNITO
+      
+    })
     const productResource = trkntrcResource.addResource('product');
-    productResource.addMethod('POST', new apigw.LambdaIntegration(itemCreator,{allowTestInvoke:true}))
-    productResource.addMethod('PUT', new apigw.LambdaIntegration(itemUpdate,{allowTestInvoke:true}))
-    productResource.addMethod('GET', new apigw.LambdaIntegration(itemGet,{allowTestInvoke:true}))
+    productResource.addMethod('POST', new apigw.LambdaIntegration(itemCreator,{allowTestInvoke:true}),
+    {
+      authorizer: auth,
+      authorizationType: apigw.AuthorizationType.COGNITO
+      
+    })
+    productResource.addMethod('PUT', new apigw.LambdaIntegration(itemUpdate,{allowTestInvoke:true}),
+    {
+      authorizer: auth,
+      authorizationType: apigw.AuthorizationType.COGNITO
+      
+    })
+    productResource.addMethod('GET', new apigw.LambdaIntegration(itemGet,{allowTestInvoke:true}),
+    {
+      authorizer: auth,
+      authorizationType: apigw.AuthorizationType.COGNITO
+      
+    })
     
     const validateResource = trkntrcResource.addResource('validate');  // POST - verify paylod for compliance and coldchain
-    validateResource.addMethod('POST', new apigw.LambdaIntegration(dataValidation,{allowTestInvoke:true}))
+    validateResource.addMethod('POST', new apigw.LambdaIntegration(dataValidation,{allowTestInvoke:true}),
+    {
+      authorizer: auth,
+      authorizationType: apigw.AuthorizationType.COGNITO
+      
+    })
     const simulateResource = trkntrcResource.addResource('simulate');  // POST - sensor payload for coldchain update
-    simulateResource.addMethod('POST', new apigw.LambdaIntegration(sensorUpdate,{allowTestInvoke:true}))
+    simulateResource.addMethod('POST', new apigw.LambdaIntegration(sensorUpdate,{allowTestInvoke:true}),
+    {
+      authorizer: auth,
+      authorizationType: apigw.AuthorizationType.COGNITO
+      
+    })
 
   // AWS IoT thing and rule 
     const trackntraceSensor = new iot.CfnThing(this, 'trackntraceSensor', /* all optional props */ {

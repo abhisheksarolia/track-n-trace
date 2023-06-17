@@ -15,7 +15,6 @@
 #  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 #  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #  */
-
 from array import array
 from base64 import b64encode
 from functools import reduce
@@ -26,6 +25,7 @@ from amazon.ion.simpleion import loads
 
 HASH_LENGTH = 32
 UPPER_BOUND = 8
+
 
 def parse_proof(value_holder):
     """

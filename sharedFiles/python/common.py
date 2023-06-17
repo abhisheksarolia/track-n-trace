@@ -15,7 +15,6 @@
 #  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 #  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #  */
-
 from datetime import datetime
 from decimal import Decimal
 
@@ -27,6 +26,7 @@ from base64 import encode, decode, b64encode, b64decode
 
 IonValue = (IonPyBool, IonPyBytes, IonPyDecimal, IonPyDict, IonPyFloat, IonPyInt, IonPyList, IonPyNull, IonPySymbol,
             IonPyText, IonPyTimestamp)
+   
 
 def convert_object_to_ion(py_object):
     """
@@ -214,7 +214,8 @@ def create_qldb_driver(ledger_name, region_name=None, endpoint_url=None, boto3_s
     qldb_driver = QldbDriver(ledger_name=ledger_name, region_name=region_name, endpoint_url=endpoint_url,
                              boto3_session=boto3_session)
     return qldb_driver
-    
+
+  
 def to_base_64(input):
     """
     Encode input in base64.
